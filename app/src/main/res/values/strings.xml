@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Scanner</string>
+    <string name="insira_o_n_mero_de_caixas_no_pallet">Insira o número de caixas no pallet:</string>
+    <string name="insira_aqui">Insira aqui</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="senha">Senha</string>
+    <string name="matricula">Matrícula</string>
+    <string name="token_login">token</string>
+    <string name="id_usuario">0</string>
+</resources>
