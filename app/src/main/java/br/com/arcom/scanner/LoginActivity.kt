@@ -28,7 +28,15 @@ class LoginActivity : AppCompatActivity() {
         val senha = binding.inputSenha
         viewModel.verificaToken()
         binding.btnLogin.setOnClickListener {
-            viewModel.logar(idUsuario.text.toString().toInt(), senha.text.toString())
+            if (idUsuario.text != null && senha.text != null) {
+                viewModel.logar(idUsuario.text.toString().toInt(), senha.text.toString())
+            } else {
+                Toast.makeText(
+                    this,
+                    "Erro ao processar a requisicao $it!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
         viewModel.status.observe(this) {
 
@@ -36,7 +44,9 @@ class LoginActivity : AppCompatActivity() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
 
-            when(it) {
+
+
+            when (it) {
                 is Result.Ok -> {
                     Toast.makeText(this, "Saldo com sucesso!", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, MainActivity::class.java)
@@ -44,10 +54,15 @@ class LoginActivity : AppCompatActivity() {
                     intent.clearStack()
                 }
                 is Result.Error -> {
-                    Toast.makeText(this, "Erro ao processar a requisicao $it!", Toast.LENGTH_LONG).show()
-                // desabilitar o loading progress
+                    Toast.makeText(
+                        this,
+                        "Erro ao processar a requisicao $it!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    // desabilitar o loading progress
                 }
-                is Result.Loading -> { }// habilitar o progress
+                is Result.Loading -> {
+                }// habilitar o progress
                 is Result.Token -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
@@ -55,6 +70,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
+
 }

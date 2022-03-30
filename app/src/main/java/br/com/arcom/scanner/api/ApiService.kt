@@ -27,7 +27,7 @@ interface ApiService {
     ): Call<Any>
 
     companion object {
-        const val BASE_URL = "http://dc2c-200-251-86-130.ngrok.io/"
+        const val BASE_URL = "http://siga.arcom.com.br/"
 
         fun create(token: String?): ApiService {
             val logger = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC}

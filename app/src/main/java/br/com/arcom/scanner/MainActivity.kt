@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnDeslogar.setOnClickListener {
             viewModel.deslogar()
-
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
 
         viewModel.status.observe(this) {
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity() {
                 is Result.Loading -> { }// habilitar o progress
 
                 is Result.Unauthorized -> {
+                    Toast.makeText(this, "Erro ao verificar o token, faça login novamente! $it!", Toast.LENGTH_LONG).show()
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                 }

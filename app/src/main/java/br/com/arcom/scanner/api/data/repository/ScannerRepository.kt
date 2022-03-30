@@ -19,7 +19,7 @@ class ScannerRepository @Inject constructor() {
     }
 
     suspend fun liberar(carga: Carga,token:String,idUsuario: Int){
-        val service = ApiService.create("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNTk2MTY7NzY7MjAyMi0wMy0yOTszOGQ0OTk5My03YTc2LTRjNWYtOWNlNC03YmE3MzBmZDYyYzciLCJleHAiOjE2NDg1OTM0ODJ9.GvS51-kdMoPIyNLmIuffQNAYVwEcv_jc69KfBOXBneE")
+        val service = ApiService.create(token)
         service.cargaInfos(CargaInfo(idUsuario = idUsuario, cargaPrincipal = carga.carga, boxCarregamento = carga.box, quantidadeRecipientesContagem = carga.volume))
     }
 
