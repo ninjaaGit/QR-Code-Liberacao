@@ -2,13 +2,16 @@ package br.com.arcom.scanner
 
 import android.app.Dialog
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import br.com.arcom.scanner.api.model.Carga
 import br.com.arcom.scanner.databinding.ActivityMainBinding
+import br.com.arcom.scanner.util.Result
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
@@ -17,15 +20,44 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
+    private lateinit var viewModel: ScannerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        binding.nomeUsuario.text = "Visitante"
         setContentView(binding.root)
         binding.btnScan.setOnClickListener { initScanner() }
+        viewModel = ViewModelProvider(this)[ScannerViewModel::class.java]
+
+        viewModel.dadosUsuario.observe(this) {
+            binding.nomeUsuario.text = it
+        }
+
+        binding.btnDeslogar.setOnClickListener {
+            viewModel.deslogar()
+
+        }
+
+        viewModel.status.observe(this) {
+            when(it) {
+                is Result.Ok -> {
+                    Toast.makeText(this, "Deu certo!", Toast.LENGTH_SHORT).show()
+                }
+                is Result.Error -> {
+                    Toast.makeText(this, "Erro ao processar a requisicao $it!", Toast.LENGTH_LONG).show()
+                    // desabilitar o loading progress
+                }
+                is Result.Loading -> { }// habilitar o progress
+
+                is Result.Unauthorized -> {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+        }
     }
 
     private fun initScanner() {
@@ -38,8 +70,6 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-
-        val resuult = result.contents
 
         if (result.contents == null) {
             Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show()
@@ -85,5 +115,8 @@ class MainActivity : AppCompatActivity() {
             initScanner()
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         }
+
+
+
     }
 }

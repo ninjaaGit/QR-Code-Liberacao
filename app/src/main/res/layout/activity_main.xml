@@ -7,7 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/btn_deslogar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/deslogar"
+        android:backgroundTint="#950404"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"/>
+
     <ImageView
+        android:id="@+id/ic_logo"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/ic_logosvg"
@@ -16,11 +28,40 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHeight_percent="0.2"
+        android:layout_marginTop="50dp"
         android:textSize="32dp"
         android:fontFamily="sans-serif-black"
-        app:layout_constraintBottom_toTopOf="@id/btnScan"/>
+        />
 
 
+
+    <TextView
+        android:id="@+id/bem_vindo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ic_logo"
+        android:layout_marginTop="150dp"
+        android:textSize="30dp"
+        android:text="Bem vindo"
+        />
+
+    <TextView
+        android:id="@+id/nome_usuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bem_vindo"
+        android:textSize="30dp"
+        android:text="nome usuario"
+        />
 
     <Button
         android:id="@+id/btnScan"

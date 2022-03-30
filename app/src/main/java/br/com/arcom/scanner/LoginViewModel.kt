@@ -1,39 +1,53 @@
 package br.com.arcom.scanner
 
-import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
-import android.provider.Settings.Global.getString
-import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.arcom.scanner.api.data.repository.ScannerRepository
-import br.com.arcom.scanner.api.model.Carga
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+import javax.inject.Named
+import br.com.arcom.scanner.util.Result
 
 @HiltViewModel
 class LoginViewModel
 @Inject internal constructor(
     val scannerRepository: ScannerRepository,
-    @ApplicationContext context: Context
-
+    @Named("auth") val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-    val context = context
-    var token = ""
+    private val _status = MutableLiveData<Result>()
+    val status: LiveData<Result> = _status
 
 
-    fun logar(idUsuario:Int, senha:String):String{
+    fun verificaToken() {
         viewModelScope.launch {
-            try {
-                token =  scannerRepository.buscarToken(idUsuario = idUsuario, senha = senha)
-            } catch (e: Exception) {
-                Toast.makeText(context, "Falha no login, verifique a matrícula e/ou sua senha.", Toast.LENGTH_LONG).show()
+            val token = sharedPreferences.getString("token", null)
+            if (token != null) {
+                _status.value = Result.Token
             }
         }
-        return token
+    }
+
+    fun logar(idUsuario: Int, senha: String) {
+        viewModelScope.launch {
+            _status.value = Result.Loading
+            try {
+                val user = scannerRepository.buscarToken(idUsuario = idUsuario, senha = senha)
+                val editor = sharedPreferences.edit()
+                editor.putString("token", user.token)
+                editor.putString("nomeUsuario", user.nomeUsuario)
+                editor.putInt("idUsuario", user.idUsuario)
+                editor.apply()
+                _status.value = Result.Ok
+            } catch (e: Exception) {
+                _status.value = Result.Error(e)
+            }
+        }
     }
 }

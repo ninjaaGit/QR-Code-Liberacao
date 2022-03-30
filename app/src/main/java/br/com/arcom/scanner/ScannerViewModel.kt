@@ -1,42 +1,64 @@
 package br.com.arcom.scanner
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.provider.Settings.Global.getString
-import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.arcom.scanner.api.data.repository.ScannerRepository
 import br.com.arcom.scanner.api.model.Carga
+import br.com.arcom.scanner.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 
 @HiltViewModel
 class ScannerViewModel
 @Inject internal constructor(
     val scannerRepository: ScannerRepository,
-    @ApplicationContext context: Context
-
+    @Named("auth") val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-    val context = context
+    private val _status = MutableLiveData<Result>()
+    val status: LiveData<Result> = _status
 
-  fun verificar(carga: Carga,token: String, idUsuario: Int){
+    private val _dadosUsuario = MutableLiveData<String>()
+    val dadosUsuario: LiveData<String> = _dadosUsuario
+
+    init {
+        viewModelScope.launch {
+            val nomeUsuario = sharedPreferences.getString("nomeUsuario", "")
+            _dadosUsuario.value = nomeUsuario!!
+        }
+    }
+
+    fun deslogar(){
+        sharedPreferences.edit().clear().apply()
+        _status.value = Result.Unauthorized
+    }
+
+  fun verificar(carga: Carga){
       viewModelScope.launch {
+          _status.value = Result.Loading
           try {
-              scannerRepository.liberar(carga,token,idUsuario)
-              Toast.makeText(context, "Carga liberada com sucesso!", Toast.LENGTH_LONG).show()
+              val idUsuario = sharedPreferences.getInt("idUsuario", 0)
+              val token = sharedPreferences.getString("token", null)
+              val nomeUsuario = sharedPreferences.getString("nomeUsuario", "")
+               scannerRepository.liberar(carga,token!!,idUsuario)
+              _status.value = Result.Ok
+              _dadosUsuario.value = nomeUsuario!!
           } catch (e: Exception){
-              if(e.message == "HTTP 400 Bad Request") {
-                  Toast.makeText(context, "Esta carga não tem pendência de liberação!", Toast.LENGTH_LONG).show()
-              } else {
-                  Toast.makeText(context, "${e.message}", Toast.LENGTH_LONG).show()
+              println("${e.message} aaaaaaaaaaaaaaaaaa")
+
+              if (e.message!!.contains("Unauthorized")) {
+                  sharedPreferences.edit().clear().apply()
+                  _status.value = Result.Unauthorized
+
               }
+              _status.value = Result.Error(e)
           }
       }
   }
-
 }

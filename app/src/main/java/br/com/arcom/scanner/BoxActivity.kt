@@ -32,17 +32,18 @@ class BoxActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         val boxIntent = intent.getStringExtra("Box")
-
         val listMainActivity = Gson().fromJson(boxIntent, Carga::class.java)
-
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-
         val boxModel = Gson().fromJson(result.contents, Box::class.java)
 
+        if(boxModel.id != null && boxModel.box != null || boxModel.box != null || boxModel.id != null){
         verificar(boxModel, listMainActivity)
-
+        }
+        else {
+            Toast.makeText(this, "QR Code inválido!", Toast.LENGTH_SHORT).show()
+            initScanner()
+        }
         super.onActivityResult(requestCode, resultCode, data)
-
     }
 
     fun verificar(box: Box, carga: Carga) {
@@ -51,16 +52,8 @@ class BoxActivity : AppCompatActivity() {
             Toast.makeText(this, "O box informado está incorreto", Toast.LENGTH_LONG).show()
         } else {
             val intent = Intent(this, MainActivity::class.java)
-            val sharedPref = getPreferences(Context.MODE_PRIVATE)
-            val idUsuario = sharedPref.getInt(getString(R.string.id_usuario), 0)
-            val token = sharedPref.getString(getString(R.string.token_login), "")
-            if (token != null && idUsuario != null) {
-                viewModel.verificar(carga, token, idUsuario)
-                startActivity(intent)
-            }else{
-                Toast.makeText(this, "Erro ao achar o token", Toast.LENGTH_LONG).show()
-            }
-
+            viewModel.verificar(carga)
+            startActivity(intent)
         }
     }
 
