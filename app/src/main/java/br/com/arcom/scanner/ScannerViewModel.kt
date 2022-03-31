@@ -36,7 +36,7 @@ class ScannerViewModel
 
     fun deslogar(){
         sharedPreferences.edit().clear().apply()
-        _status.value = Result.Unauthorized
+
     }
 
   fun verificar(carga: Carga){
@@ -46,7 +46,7 @@ class ScannerViewModel
               val idUsuario = sharedPreferences.getInt("idUsuario", 0)
               val token = sharedPreferences.getString("token", null)
               val nomeUsuario = sharedPreferences.getString("nomeUsuario", "")
-               scannerRepository.liberar(carga,token!!,idUsuario)
+              scannerRepository.liberar(carga,token!!,idUsuario)
               _status.value = Result.Ok
               _dadosUsuario.value = nomeUsuario!!
           } catch (e: Exception){
@@ -55,9 +55,13 @@ class ScannerViewModel
               if (e.message!!.contains("Unauthorized")) {
                   sharedPreferences.edit().clear().apply()
                   _status.value = Result.Unauthorized
-
               }
+              if (e.message!!.contains("End of input at line 1 column 1 path")) {
+                  _status.value = Result.Ok
+              }
+              else {
               _status.value = Result.Error(e)
+              }
           }
       }
   }

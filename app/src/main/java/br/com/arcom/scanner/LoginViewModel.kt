@@ -27,7 +27,7 @@ class LoginViewModel
 
     fun verificaToken() {
         viewModelScope.launch {
-            val token = sharedPreferences.getString("token", null)
+            val token = sharedPreferences.getString("token_login", null)
             if (token != null) {
                 _status.value = Result.Token
             }

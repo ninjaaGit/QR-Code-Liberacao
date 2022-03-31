@@ -4,7 +4,7 @@ import android.content.Context
 
 class Prefs (context: Context) {
 
-    private  val TOKEN = "token_siga"
+    private val TOKEN = "token_siga"
 
 }
 

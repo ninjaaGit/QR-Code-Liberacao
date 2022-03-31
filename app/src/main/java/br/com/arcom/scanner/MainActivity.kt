@@ -2,12 +2,11 @@ package br.com.arcom.scanner
 
 import android.app.Dialog
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import br.com.arcom.scanner.api.model.Carga
 import br.com.arcom.scanner.databinding.ActivityMainBinding
@@ -36,6 +35,11 @@ class MainActivity : AppCompatActivity() {
             binding.nomeUsuario.text = it
         }
 
+        if (viewModel.sharedPreferences.getString("token", null) == null || viewModel.sharedPreferences.getString("token_login", null) == "") {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.btnDeslogar.setOnClickListener {
             viewModel.deslogar()
             val intent = Intent(this, LoginActivity::class.java)
@@ -43,20 +47,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.status.observe(this) {
-            when(it) {
-                is Result.Ok -> {
-                    Toast.makeText(this, "Deu certo!", Toast.LENGTH_SHORT).show()
-                }
+            when (it) {
+                is Result.Ok -> {}
                 is Result.Error -> {
-                    Toast.makeText(this, "Erro ao processar a requisicao $it!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Erro ao processar a requisicao $it!", Toast.LENGTH_LONG)
+                        .show()
                     // desabilitar o loading progress
                 }
-                is Result.Loading -> { }// habilitar o progress
+                is Result.Loading -> {
+
+                }// habilitar o progress
 
                 is Result.Unauthorized -> {
-                    Toast.makeText(this, "Erro ao verificar o token, faça login novamente! $it!", Toast.LENGTH_LONG).show()
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
+                    Toast.makeText(
+                        this,
+                        "Erro ao verificar o token, faça login novamente! $it!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    viewModel.deslogar()
                 }
             }
         }
@@ -76,11 +84,8 @@ class MainActivity : AppCompatActivity() {
         if (result.contents == null) {
             Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show()
         } else {
-            Toast.makeText(this, "${result.contents}", Toast.LENGTH_LONG).show()
             openDialog(result.contents)
         }
-        Log.d("teste", result.contents)
-
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -88,36 +93,44 @@ class MainActivity : AppCompatActivity() {
 
         try {
             val list = Gson().fromJson(result, Carga::class.java)
-
-            println("$list aaaaaaaaaa")
             if (list.box != null && list.carga != null && list.id != null && list.volume != null) {
-                val dialog = Dialog(this)
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog.setCancelable(true)
-                dialog.setContentView(R.layout.dialog)
-                val input = dialog.findViewById(R.id.txt_input) as TextInputEditText
-                val btn = dialog.findViewById(R.id.btn_confirmar) as MaterialButton
-                btn.setOnClickListener {
-                    if (input.text.toString() == list.volume.toString()) {
-                        val intent = Intent(this, BoxActivity::class.java)
-                        intent.putExtra("Box", result)
-                        startActivity(intent)
-                    } else {
-                        Toast.makeText(this, "O valor inserido não corresponde", Toast.LENGTH_SHORT)
-                            .show()
+                if (list.id == 3L) {
+                    val dialog = Dialog(this)
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                    dialog.setCancelable(true)
+                    dialog.setContentView(R.layout.dialog)
+                    val box = dialog.findViewById(R.id.txt_box) as TextView
+                    val input = dialog.findViewById(R.id.txt_input) as TextInputEditText
+                    val btn = dialog.findViewById(R.id.btn_confirmar) as MaterialButton
+                    box.text = "BOX: " + list.box
+                    btn.setOnClickListener {
+                        if (input.text.toString() == list.volume.toString()) {
+                            val intent = Intent(this, BoxActivity::class.java)
+                            intent.putExtra("Box", result)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(
+                                this,
+                                "O valor inserido não corresponde",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
                     }
+                    dialog.show()
+                } else {
+                    initScanner()
+                    Toast.makeText(this, "O QR Code inserido é inválido", Toast.LENGTH_LONG).show()
                 }
-                dialog.show()
             } else {
                 initScanner()
-                Toast.makeText(this, "O QR Code inserido é inválido", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "O QR Code inserido é inválido", Toast.LENGTH_LONG).show()
             }
 
         } catch (e: Exception) {
             initScanner()
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         }
-
 
 
     }
