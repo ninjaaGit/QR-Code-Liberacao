@@ -35,7 +35,11 @@ class MainActivity : AppCompatActivity() {
             binding.nomeUsuario.text = it
         }
 
-        if (viewModel.sharedPreferences.getString("token", null) == null || viewModel.sharedPreferences.getString("token_login", null) == "") {
+        if (viewModel.sharedPreferences.getString(
+                "token",
+                null
+            ) == null || viewModel.sharedPreferences.getString("token_login", null) == ""
+        ) {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
@@ -48,7 +52,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.status.observe(this) {
             when (it) {
-                is Result.Ok -> {}
+                is Result.Ok -> {
+                }
                 is Result.Error -> {
                     Toast.makeText(this, "Erro ao processar a requisicao $it!", Toast.LENGTH_LONG)
                         .show()
@@ -98,40 +103,24 @@ class MainActivity : AppCompatActivity() {
                     val dialog = Dialog(this)
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                     dialog.setCancelable(true)
-                    dialog.setContentView(R.layout.dialog)
+                    dialog.setContentView(R.layout.dialog_box)
                     val box = dialog.findViewById(R.id.txt_box) as TextView
-                    val input = dialog.findViewById(R.id.txt_input) as TextInputEditText
                     val btn = dialog.findViewById(R.id.btn_confirmar) as MaterialButton
-                    box.text = "BOX: " + list.box
+                    box.text = "" + list.box
                     btn.setOnClickListener {
-                        if (input.text.toString() == list.volume.toString()) {
-                            val intent = Intent(this, BoxActivity::class.java)
-                            intent.putExtra("Box", result)
-                            startActivity(intent)
-                        } else {
-                            Toast.makeText(
-                                this,
-                                "O valor inserido não corresponde",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
+                        val intent = Intent(this, BoxActivity::class.java)
+                        intent.putExtra("Box", result)
+                        startActivity(intent)
                     }
                     dialog.show()
-                } else {
-                    initScanner()
-                    Toast.makeText(this, "O QR Code inserido é inválido", Toast.LENGTH_LONG).show()
                 }
             } else {
                 initScanner()
                 Toast.makeText(this, "O QR Code inserido é inválido", Toast.LENGTH_LONG).show()
             }
-
         } catch (e: Exception) {
             initScanner()
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         }
-
-
     }
 }

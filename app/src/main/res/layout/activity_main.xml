@@ -38,10 +38,10 @@
 
     <TextView
         android:id="@+id/bem_vindo"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintWidth_percent="0.6"
-        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintWidth_percent="0.9"
+        android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ic_logo"
@@ -52,11 +52,11 @@
 
     <TextView
         android:id="@+id/nome_usuario"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:fontFamily="sans-serif-black"
-        app:layout_constraintWidth_percent="0.6"
-        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintWidth_percent="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bem_vindo"
