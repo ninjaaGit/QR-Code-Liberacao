@@ -3,15 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/drawable/ic_baseline_login_24.xml" value="0.138" />
+        <entry key="..\:/QR-Code-Liberacao/app/src/main/res/layout/activity_erro.xml" value="0.11684782608695653" />
+        <entry key="..\:/QR-Code-Liberacao/app/src/main/res/layout/activity_main.xml" value="0.1453804347826087" />
+        <entry key="..\:/QR-Code-Liberacao/app/src/main/res/layout/activity_sucesso.xml" value="0.14945652173913043" />
+        <entry key="..\:/QR-Code-Liberacao/app/src/main/res/layout/dialog.xml" value="0.14945652173913043" />
+        <entry key="..\:/QR-Code-Liberacao/app/src/main/res/layout/dialog_box.xml" value="0.14945652173913043" />
         <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/drawable/ic_logosvg.xml" value="0.141" />
         <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/layout/activity_camera.xml" value="0.25" />
-        <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/layout/activity_erro.xml" value="0.175" />
         <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/layout/activity_main.xml" value="0.2" />
-        <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/layout/activity_sucesso.xml" value="0.2" />
-        <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/layout/dialog.xml" value="0.25" />
+        <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/layout/dialog.xml" value="0.33" />
         <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/layout/login.xml" value="0.33" />
-        <entry key="..\:/Users/artur.luz/AndroidStudioProjects/Scanner2/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1665" />
       </map>
     </option>
   </component>
